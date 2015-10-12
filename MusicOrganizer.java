@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import java.util.Random;
+import java.lang.Thread;
+import java.lang.Object;
 
 /**
  * A class to hold details of audio tracks.
@@ -15,6 +18,10 @@ public class MusicOrganizer
     private MusicPlayer player;
     // A reader that can read music files and load them as tracks.
     private TrackReader reader;
+    // Used to initialize the random feature.
+    private Random randObj = new Random();
+
+
 
     /**
      * Create a MusicOrganizer
@@ -46,6 +53,20 @@ public class MusicOrganizer
     {
         tracks.add(track);
     }
+ /**
+ * Plays a random track
+ */
+    public void playRandom(){
+        int rndTrack = randObj.nextInt(tracks.size());
+       player.startPlaying(tracks.get(rndTrack).getFilename() );        
+   }
+   
+   private Track getRandomTrack(){
+         int rndTrack = randObj.nextInt(tracks.size());
+        player.startPlaying(tracks.get(rndTrack).getFilename() );
+       return tracks.get(rndTrack);
+   }
+  
     
     /**
      * Play a track in the collection.
@@ -61,10 +82,35 @@ public class MusicOrganizer
     }
     
     /**
+    * Plays each track available randomly, once
+    */
+   public void playRandomList()
+    {
+       ArrayList<Track> randomList = new ArrayList<Track>();
+       Track randTrack;
+       Boolean hasIt = false;
+         
+       System.out.println("Assembling random playlist ...");
+       for(Track track : tracks){
+            if(randomList.size() == 0){
+               randomList.add(getRandomTrack());
+                System.out.println("Added " + randomList.get(0).getFilename() + " to the list");
+            }else{
+                do{
+                   randTrack = getRandomTrack();
+                    hasIt = randomList.contains(randTrack) ;
+              }while(hasIt);
+              randomList.add(randTrack);
+               System.out.println("Added " + randTrack.getFilename() + " to the list");
+           }
+        }
+    }
+        
+    /**
      * Return the number of tracks in the collection.
      * @return The number of tracks in the collection.
      */
-    public int getNumberOfTracks()
+     public int getNumberOfTracks()
     {
         return tracks.size();
     }
